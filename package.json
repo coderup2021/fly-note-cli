@@ -1,8 +1,11 @@
 {
-  "name": "vuepress-plugin-automenu",
+  "name": "fly-note-cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "build/index.js",
+  "description": "fly note command tools",
+  "main": "dist/index.js",
+  "bin": {
+    "flynote": "dist/index.js"
+  },
   "scripts": {
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
