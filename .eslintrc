@@ -11,12 +11,15 @@
   "rules": {
     "curly": ["error", "multi"],
     "no-console": "off",
-    "no-loops/no-loops": "error",
+    "no-empty": "off",
+    "no-loops/no-loops": "off",
     "prettier/prettier": [
       "error",
       { "endOfLine": "auto" },
       { "usePrettierrc": true }
     ],
-    "sort-keys": "warn"
+    "sort-keys": "warn",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }
