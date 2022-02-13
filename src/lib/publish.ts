@@ -17,7 +17,7 @@ const readPlatConfig = (plat: string) => {
     console.log(red(`read config Error: ${error}`))
   }
 }
-const publish = (plat: string, options: any) => {
+const pp = (plat: string, options: any) => {
   if (plat === 'gitee') {
     console.log('options:', options)
     let config: GiteeConfig = readPlatConfig(plat)
@@ -27,4 +27,24 @@ const publish = (plat: string, options: any) => {
   } else if (plat === 'github') {
   } else console.log(red('unknown platform'))
 }
-export default publish
+
+const update = (plat: string, options: any) => {
+  if (plat === 'gitee') {
+    console.log('options:', options)
+    let config: GiteeConfig = readPlatConfig(plat)
+    config = { ...config, ...options }
+    updateGiteePage(config)
+  } else if (plat === 'github') {
+  } else console.log(red('unknown platform'))
+}
+
+const push = (plat: string, options: any) => {
+  if (plat === 'gitee') {
+    console.log('options:', options)
+    let config: GiteeConfig = readPlatConfig(plat)
+    config = { ...config, ...options }
+    pushToGiteeRepo(config)
+  } else if (plat === 'github') {
+  } else console.log(red('unknown platform'))
+}
+export { pp, push, update }

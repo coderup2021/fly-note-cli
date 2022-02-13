@@ -4,4 +4,10 @@ export interface GiteeConfig {
   giteeUpdateUrl: string
   giteeRepo: string
   directory: string
+  gitUserName: string
+  gitEmail: string
+}
+
+export interface VuePressConfig {
+  directory: string
 }

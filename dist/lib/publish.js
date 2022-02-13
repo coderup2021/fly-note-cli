@@ -22,6 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.update = exports.push = exports.pp = void 0;
 const colors_1 = require("colors");
 const fs = __importStar(require("fs-extra"));
 const userhome_1 = __importDefault(require("userhome"));
@@ -40,18 +41,43 @@ const readPlatConfig = (plat) => {
         console.log((0, colors_1.red)(`read config Error: ${error}`));
     }
 };
-const publish = (plat, options) => {
+const pp = (plat, options) => {
     if (plat === 'gitee') {
         console.log('options:', options);
         let config = readPlatConfig(plat);
         config = Object.assign(Object.assign({}, config), options);
         (0, gitee_1.pushToGiteeRepo)(config);
-        // updateGiteePage(config)
+        (0, gitee_1.updateGiteePage)(config);
     }
     else if (plat === 'github') {
     }
-    else {
+    else
         console.log((0, colors_1.red)('unknown platform'));
-    }
 };
-exports.default = publish;
+exports.pp = pp;
+const update = (plat, options) => {
+    if (plat === 'gitee') {
+        console.log('options:', options);
+        let config = readPlatConfig(plat);
+        config = Object.assign(Object.assign({}, config), options);
+        (0, gitee_1.updateGiteePage)(config);
+    }
+    else if (plat === 'github') {
+    }
+    else
+        console.log((0, colors_1.red)('unknown platform'));
+};
+exports.update = update;
+const push = (plat, options) => {
+    if (plat === 'gitee') {
+        console.log('options:', options);
+        let config = readPlatConfig(plat);
+        config = Object.assign(Object.assign({}, config), options);
+        (0, gitee_1.pushToGiteeRepo)(config);
+    }
+    else if (plat === 'github') {
+    }
+    else
+        console.log((0, colors_1.red)('unknown platform'));
+};
+exports.push = push;
