@@ -11,13 +11,9 @@ const readPlatConfig = (plat: string) => {
     throw new Error(`config file not found: ${configpath}`)
     return
   }
-  try {
-    return require(configpath)
-  } catch (error) {
-    console.log(red(`read config Error: ${error}`))
-  }
+  return require(configpath)
 }
-const pp = (plat: string, options: any) => {
+const pu = (plat: string, options: any) => {
   if (plat === 'gitee') {
     console.log('options:', options)
     let config: GiteeConfig = readPlatConfig(plat)
@@ -30,7 +26,6 @@ const pp = (plat: string, options: any) => {
 
 const update = (plat: string, options: any) => {
   if (plat === 'gitee') {
-    console.log('options:', options)
     let config: GiteeConfig = readPlatConfig(plat)
     config = { ...config, ...options }
     updateGiteePage(config)
@@ -40,11 +35,10 @@ const update = (plat: string, options: any) => {
 
 const push = (plat: string, options: any) => {
   if (plat === 'gitee') {
-    console.log('options:', options)
     let config: GiteeConfig = readPlatConfig(plat)
     config = { ...config, ...options }
     pushToGiteeRepo(config)
   } else if (plat === 'github') {
   } else console.log(red('unknown platform'))
 }
-export { pp, push, update }
+export { pu, push, update }

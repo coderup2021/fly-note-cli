@@ -3,11 +3,11 @@ import puppeteer from 'puppeteer'
 import * as path from 'path'
 import { $, cd } from 'zx'
 import dayjs from 'dayjs'
+import ora from 'ora'
 
 const pushToGiteeRepo = async (config: GiteeConfig) => {
   const dir = path.resolve(process.cwd(), config.directory)
   cd(dir)
-  // await $`ls`
   await $`git init`
   await $`git config user.email ${config.gitEmail}`
   await $`git config user.name ${config.gitUserName}`
@@ -20,39 +20,39 @@ const pushToGiteeRepo = async (config: GiteeConfig) => {
   await $`rm -rf ${dir}`
 }
 const updateGiteePage = async (config: GiteeConfig) => {
+  const spinner = ora('start update gitee page').start()
   const browser: puppeteer.Browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.goto('https://gitee.com/login')
-  await page.setViewport({ height: 960, width: 1080 })
-  // await page.screenshot({ path: 'screenshort1.png' })
-  await page.type('#user_login', config.username)
-  await page.type('#user_password', config.password, {
-    delay: 500
-  })
-  // await page.screenshot({ path: 'screenshort2.png' })
-  await Promise.all([
-    page.click('input[type=submit]'),
-    page.waitForNavigation()
-  ])
-  // await page.screenshot({ path: 'screenshort3.png' })
-  await Promise.all([
-    page.goto(config.giteeUpdateUrl),
-    page.waitForNavigation()
-  ])
-  // await page.screenshot({ path: 'screenshort4.png' })
-  page.on('dialog', async dialog => {
-    dialog.accept()
-    // await page.screenshot({ path: 'screenshort6.png' })
-  })
-  await Promise.all([page.click('.update_deploy')])
-  // await page.screenshot({ path: 'screenshort5.png' })
-  await page.waitForTimeout(2000)
-  let count = 0
-  while (await page.$('#pages_deploying')) {
-    console.log(`check loop, ${count}s`)
-    count += 2
+  try {
+    const page = await browser.newPage()
+    await page.goto('https://gitee.com/login')
+    await page.setViewport({ height: 960, width: 1080 })
+    await page.type('#user_login', config.username)
+    await page.type('#user_password', config.password, {
+      delay: 500
+    })
+    await Promise.all([
+      page.click('input[type=submit]'),
+      page.waitForNavigation()
+    ])
+    await Promise.all([
+      page.goto(config.giteeUpdateUrl),
+      page.waitForNavigation()
+    ])
+    page.on('dialog', async dialog => {
+      dialog.accept()
+    })
+    await Promise.all([page.click('.update_deploy')])
     await page.waitForTimeout(2000)
+    while (await page.$('#pages_deploying')) {
+      console.log('+')
+      await page.waitForTimeout(2000)
+    }
+    spinner.succeed('Update Success')
+    process.exit()
+  } catch (error) {
+    console.error('error', error)
+    spinner.fail('Update Fail. try again!')
+    updateGiteePage(config)
   }
-  console.log('发布更新完成.')
 }
 export { updateGiteePage, pushToGiteeRepo }

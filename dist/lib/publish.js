@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update = exports.push = exports.pp = void 0;
+exports.update = exports.push = exports.pu = void 0;
 const colors_1 = require("colors");
 const fs = __importStar(require("fs-extra"));
 const userhome_1 = __importDefault(require("userhome"));
@@ -34,14 +34,9 @@ const readPlatConfig = (plat) => {
         throw new Error(`config file not found: ${configpath}`);
         return;
     }
-    try {
-        return require(configpath);
-    }
-    catch (error) {
-        console.log((0, colors_1.red)(`read config Error: ${error}`));
-    }
+    return require(configpath);
 };
-const pp = (plat, options) => {
+const pu = (plat, options) => {
     if (plat === 'gitee') {
         console.log('options:', options);
         let config = readPlatConfig(plat);
@@ -54,10 +49,9 @@ const pp = (plat, options) => {
     else
         console.log((0, colors_1.red)('unknown platform'));
 };
-exports.pp = pp;
+exports.pu = pu;
 const update = (plat, options) => {
     if (plat === 'gitee') {
-        console.log('options:', options);
         let config = readPlatConfig(plat);
         config = Object.assign(Object.assign({}, config), options);
         (0, gitee_1.updateGiteePage)(config);
@@ -70,7 +64,6 @@ const update = (plat, options) => {
 exports.update = update;
 const push = (plat, options) => {
     if (plat === 'gitee') {
-        console.log('options:', options);
         let config = readPlatConfig(plat);
         config = Object.assign(Object.assign({}, config), options);
         (0, gitee_1.pushToGiteeRepo)(config);

@@ -7,7 +7,7 @@
     "flynote": "dist/index.js"
   },
   "scripts": {
-    "build": "rimraf ./build && tsc && ./copyVuepressConfig.js",
+    "build": "rimraf ./dist && tsc && ./copyVuepressConfig.js && chmod +x ./dist/index.js",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",
     "prettier-format": "prettier --config .prettierrc src/**/*.ts --write",
@@ -39,9 +39,6 @@
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3",
-    "vuepress": "^1.9.7",
-    "vuepress-plugin-automenu": "^1.0.0",
-    "vuepress-plugin-fulltext-search": "^2.2.1",
     "vuepress-types": "^0.9.4"
   },
   "lint-staged": {
@@ -56,9 +53,12 @@
     "execa": "^6.0.0",
     "fs-extra": "^10.0.0",
     "merge": "^2.1.1",
+    "ora": "5.4.0",
     "puppeteer": "^13.1.3",
     "terminal-kit": "^2.4.0",
     "userhome": "^1.0.0",
+    "vuepress": "^1.9.7",
+    "vuepress-plugin-fulltext-search": "^2.2.1",
     "zx": "^4.3.0"
   }
 }

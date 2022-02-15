@@ -28,12 +28,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.build = exports.dev = void 0;
+exports.init = exports.build = exports.dev = void 0;
 const ChildProcess = __importStar(require("child_process"));
 const path = __importStar(require("path"));
 const utils_1 = require("../utils");
 const fsExtra = __importStar(require("fs-extra"));
-const colors_1 = require("colors");
+const init = (rDirectory) => __awaiter(void 0, void 0, void 0, function* () {
+    const aDirectroy = path.resolve(process.cwd(), rDirectory);
+    if (!fsExtra.existsSync(aDirectroy)) {
+        throw new Error(`no such directory: ${aDirectroy}`);
+        return;
+    }
+    if (!(0, utils_1.isDirectory)(aDirectroy)) {
+        throw new Error(`target path is not a directory: ${aDirectroy}`);
+        return;
+    }
+    fsExtra.copySync(path.resolve(__dirname, '../.vuepress'), `${aDirectroy}/.vuepress`);
+});
+exports.init = init;
 const dev = (rDirectory) => __awaiter(void 0, void 0, void 0, function* () {
     exec('dev', rDirectory);
 });
@@ -44,27 +56,30 @@ const build = (rDirectory) => __awaiter(void 0, void 0, void 0, function* () {
 exports.build = build;
 const exec = (type, rDirectory) => __awaiter(void 0, void 0, void 0, function* () {
     const aDirectroy = path.resolve(process.cwd(), rDirectory);
-    console.log('aDirectroy', aDirectroy);
     if (!fsExtra.existsSync(aDirectroy)) {
-        console.log((0, colors_1.red)(`no such directory: ${aDirectroy}`));
+        throw new Error(`no such directory: ${aDirectroy}`);
         return;
     }
     if (!(0, utils_1.isDirectory)(aDirectroy)) {
-        console.log((0, colors_1.red)(`target path is not a directory: ${aDirectroy}`));
+        throw new Error(`target path is not a directory: ${aDirectroy}`);
         return;
     }
-    yield execCmd(`npx vuepress automenu -f ${aDirectroy}`);
-    yield execCmd(`npx vuepress ${type} ${aDirectroy}`);
+    //prettier-ignore
+    const vuepressPath = path.resolve(__dirname, '../../node_modules/.bin/vuepress');
+    yield execCmd(`${vuepressPath} automenu ${aDirectroy} -f`);
+    yield execCmd(`${vuepressPath} ${type} ${aDirectroy}`);
 });
 const execCmd = (cmd) => {
     return new Promise((resolve, reject) => {
-        var _a, _b;
-        let cp = ChildProcess.exec(cmd, (error, stdout, stderr) => {
+        var _a, _b, _c;
+        const cp = ChildProcess.exec(cmd, (error, stdout, stderr) => {
             if (error) {
+                console.log('error', error);
                 reject(error);
                 return;
             }
             if (stderr) {
+                console.log('stderr', stderr);
                 reject(stderr);
                 return;
             }
@@ -72,5 +87,6 @@ const execCmd = (cmd) => {
         });
         (_a = cp.stdout) === null || _a === void 0 ? void 0 : _a.pipe(process.stdout);
         (_b = cp.stderr) === null || _b === void 0 ? void 0 : _b.pipe(process.stderr);
+        (_c = cp.stdin) === null || _c === void 0 ? void 0 : _c.pipe(process.stdin);
     });
 };

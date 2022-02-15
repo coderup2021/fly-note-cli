@@ -36,10 +36,10 @@ const puppeteer_1 = __importDefault(require("puppeteer"));
 const path = __importStar(require("path"));
 const zx_1 = require("zx");
 const dayjs_1 = __importDefault(require("dayjs"));
+const ora_1 = __importDefault(require("ora"));
 const pushToGiteeRepo = (config) => __awaiter(void 0, void 0, void 0, function* () {
     const dir = path.resolve(process.cwd(), config.directory);
     (0, zx_1.cd)(dir);
-    // await $`ls`
     yield (0, zx_1.$) `git init`;
     yield (0, zx_1.$) `git config user.email ${config.gitEmail}`;
     yield (0, zx_1.$) `git config user.name ${config.gitUserName}`;
@@ -53,39 +53,40 @@ const pushToGiteeRepo = (config) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.pushToGiteeRepo = pushToGiteeRepo;
 const updateGiteePage = (config) => __awaiter(void 0, void 0, void 0, function* () {
+    const spinner = (0, ora_1.default)('start update gitee page').start();
     const browser = yield puppeteer_1.default.launch();
-    const page = yield browser.newPage();
-    yield page.goto('https://gitee.com/login');
-    yield page.setViewport({ height: 960, width: 1080 });
-    yield page.screenshot({ path: 'screenshort1.png' });
-    yield page.type('#user_login', config.username);
-    yield page.type('#user_password', config.password, {
-        delay: 500
-    });
-    yield page.screenshot({ path: 'screenshort2.png' });
-    yield Promise.all([
-        page.click('input[type=submit]'),
-        page.waitForNavigation()
-    ]);
-    yield page.screenshot({ path: 'screenshort3.png' });
-    yield Promise.all([
-        page.goto(config.giteeUpdateUrl),
-        page.waitForNavigation()
-    ]);
-    yield page.screenshot({ path: 'screenshort4.png' });
-    page.on('dialog', (dialog) => __awaiter(void 0, void 0, void 0, function* () {
-        dialog.accept();
-        yield page.screenshot({ path: 'screenshort6.png' });
-    }));
-    yield Promise.all([page.click('.update_deploy')]);
-    yield page.screenshot({ path: 'screenshort5.png' });
-    yield page.waitForTimeout(2000);
-    let count = 0;
-    while (yield page.$('#pages_deploying')) {
-        console.log(`check loop, ${count}s`);
-        count += 2;
+    try {
+        const page = yield browser.newPage();
+        yield page.goto('https://gitee.com/login');
+        yield page.setViewport({ height: 960, width: 1080 });
+        yield page.type('#user_login', config.username);
+        yield page.type('#user_password', config.password, {
+            delay: 500
+        });
+        yield Promise.all([
+            page.click('input[type=submit]'),
+            page.waitForNavigation()
+        ]);
+        yield Promise.all([
+            page.goto(config.giteeUpdateUrl),
+            page.waitForNavigation()
+        ]);
+        page.on('dialog', (dialog) => __awaiter(void 0, void 0, void 0, function* () {
+            dialog.accept();
+        }));
+        yield Promise.all([page.click('.update_deploy')]);
         yield page.waitForTimeout(2000);
+        while (yield page.$('#pages_deploying')) {
+            console.log('+');
+            yield page.waitForTimeout(2000);
+        }
+        spinner.succeed('Update Success');
+        process.exit();
     }
-    console.log('发布更新完成.');
+    catch (error) {
+        console.error('error', error);
+        spinner.fail('Update Fail. try again!');
+        updateGiteePage(config);
+    }
 });
 exports.updateGiteePage = updateGiteePage;

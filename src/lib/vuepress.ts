@@ -1,10 +1,23 @@
-import { VuePressConfig } from '../types/index.d'
 import * as ChildProcess from 'child_process'
 import * as path from 'path'
 import { isDirectory } from '../utils'
 import * as fsExtra from 'fs-extra'
-import { red } from 'colors'
 
+const init = async (rDirectory: string) => {
+  const aDirectroy = path.resolve(process.cwd(), rDirectory)
+  if (!fsExtra.existsSync(aDirectroy)) {
+    throw new Error(`no such directory: ${aDirectroy}`)
+    return
+  }
+  if (!isDirectory(aDirectroy)) {
+    throw new Error(`target path is not a directory: ${aDirectroy}`)
+    return
+  }
+  fsExtra.copySync(
+    path.resolve(__dirname, '../.vuepress'),
+    `${aDirectroy}/.vuepress`
+  )
+}
 const dev = async (rDirectory: string) => {
   exec('dev', rDirectory)
 }
@@ -14,17 +27,18 @@ const build = async (rDirectory: string) => {
 
 const exec = async (type: string, rDirectory: string) => {
   const aDirectroy = path.resolve(process.cwd(), rDirectory)
-  console.log('aDirectroy', aDirectroy)
   if (!fsExtra.existsSync(aDirectroy)) {
-    console.log(red(`no such directory: ${aDirectroy}`))
+    throw new Error(`no such directory: ${aDirectroy}`)
     return
   }
   if (!isDirectory(aDirectroy)) {
-    console.log(red(`target path is not a directory: ${aDirectroy}`))
+    throw new Error(`target path is not a directory: ${aDirectroy}`)
     return
   }
-  await execCmd(`npx vuepress automenu -f ${aDirectroy}`)
-  await execCmd(`npx vuepress ${type} ${aDirectroy}`)
+  //prettier-ignore
+  const vuepressPath = path.resolve( __dirname, '../../node_modules/.bin/vuepress')
+  await execCmd(`${vuepressPath} automenu ${aDirectroy} -f`)
+  await execCmd(`${vuepressPath} ${type} ${aDirectroy}`)
 }
 
 const execCmd = (cmd: string) => {
@@ -37,10 +51,12 @@ const execCmd = (cmd: string) => {
         stderr: string
       ) => {
         if (error) {
+          console.log('error', error)
           reject(error)
           return
         }
         if (stderr) {
+          console.log('stderr', stderr)
           reject(stderr)
           return
         }
@@ -49,7 +65,8 @@ const execCmd = (cmd: string) => {
     )
     cp.stdout?.pipe(process.stdout)
     cp.stderr?.pipe(process.stderr)
+    cp.stdin?.pipe(process.stdin)
   })
 }
 
-export { dev, build }
+export { dev, build, init }
