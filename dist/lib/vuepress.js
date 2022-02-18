@@ -27,12 +27,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.init = exports.build = exports.dev = void 0;
 const ChildProcess = __importStar(require("child_process"));
 const path = __importStar(require("path"));
 const utils_1 = require("../utils");
 const fsExtra = __importStar(require("fs-extra"));
+const home_dir_1 = __importDefault(require("home-dir"));
+function copyGiteeJsonFile() {
+    console.log('exec cpy gitee json');
+    const filepath = (0, home_dir_1.default)(`.flynote/gitee.json`);
+    if (!fsExtra.existsSync(filepath)) {
+        fsExtra.ensureDirSync((0, home_dir_1.default)('.flynote'));
+        fsExtra.copyFile(path.resolve(__dirname, '../source/gitee.json'), filepath);
+    }
+}
 const init = (rDirectory) => __awaiter(void 0, void 0, void 0, function* () {
     const aDirectroy = path.resolve(process.cwd(), rDirectory);
     if (!fsExtra.existsSync(aDirectroy)) {
@@ -44,6 +56,7 @@ const init = (rDirectory) => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     fsExtra.copySync(path.resolve(__dirname, '../.vuepress'), `${aDirectroy}/.vuepress`);
+    copyGiteeJsonFile();
 });
 exports.init = init;
 const dev = (rDirectory) => __awaiter(void 0, void 0, void 0, function* () {

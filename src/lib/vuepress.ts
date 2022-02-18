@@ -2,6 +2,16 @@ import * as ChildProcess from 'child_process'
 import * as path from 'path'
 import { isDirectory } from '../utils'
 import * as fsExtra from 'fs-extra'
+import homeDir from 'home-dir'
+
+function copyGiteeJsonFile() {
+  console.log('exec cpy gitee json')
+  const filepath = homeDir(`.flynote/gitee.json`)
+  if (!fsExtra.existsSync(filepath)) {
+    fsExtra.ensureDirSync(homeDir('.flynote'))
+    fsExtra.copyFile(path.resolve(__dirname, '../source/gitee.json'), filepath)
+  }
+}
 
 const init = async (rDirectory: string) => {
   const aDirectroy = path.resolve(process.cwd(), rDirectory)
@@ -17,6 +27,7 @@ const init = async (rDirectory: string) => {
     path.resolve(__dirname, '../.vuepress'),
     `${aDirectroy}/.vuepress`
   )
+  copyGiteeJsonFile()
 }
 const dev = async (rDirectory: string) => {
   exec('dev', rDirectory)

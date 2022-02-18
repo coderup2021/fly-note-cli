@@ -5403,6 +5403,11 @@ hogan.js@^3.0.2:
     mkdirp "0.3.0"
     nopt "1.0.10"
 
+home-dir@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/home-dir/-/home-dir-1.0.0.tgz#2917eb44bdc9072ceda942579543847e3017fe4e"
+  integrity sha1-KRfrRL3JByztqUJXlUOEfjAX/k4=
+
 hosted-git-info@^2.1.4:
   version "2.8.9"
   resolved "https://registry.npmmirror.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
@@ -10253,6 +10258,16 @@ vuepress-html-webpack-plugin@^3.2.0:
     tapable "^1.0.0"
     toposort "^1.0.0"
     util.promisify "1.0.0"
+
+vuepress-plugin-automenu@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/vuepress-plugin-automenu/-/vuepress-plugin-automenu-1.0.4.tgz#7babc002929b6ea059374c776873adf714d3a162"
+  integrity sha512-B4g/B4FkuiJNJjH6BleeIjYDuKdUb96FEKMwHvrDuZwKqLJKY1oYom7NH344W8GT7zpXBdv/eS8JtRzEfq2cUA==
+  dependencies:
+    colors "^1.4.0"
+    execa "^6.0.0"
+    fs-extra "^10.0.0"
+    merge "^2.1.1"
 
 vuepress-plugin-container@^2.0.2:
   version "2.1.5"

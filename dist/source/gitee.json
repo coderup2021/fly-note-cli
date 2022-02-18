@@ -1,0 +1,8 @@
+{
+    "username": "gitee account",
+    "password": "gitee password",
+    "giteeUpdateUrl": "Gitee Page update url. example: https://gitee.com/itgou/itgou/pages",
+    "giteeRepo": "Gitee Page Repo: example: git@gitee.com:itgou/itgou.git",
+    "gitUserName": "git config user.name",
+    "gitEmail": "git config user.email"
+}
